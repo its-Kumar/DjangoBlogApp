@@ -1,0 +1,64 @@
+{%extends 'base.html'%}
+{%load crispy_forms_tags%}
+{%block title%} {{post.title}} {%endblock%}
+
+
+{%block content%}
+<div class="container">
+
+    <div class='col-sm-6 col-sm-offset-3'>
+
+        <h2>{{post.title}}</h2>
+        <small class="text-muted">{{post.publish}} - {{post.user}}</small>
+        <small>{%if post.draft%} <span style="color: red;">Draft </span>{%endif%}</small>
+        {%if post.image%}
+        <img src="{{post.image.url}}">
+        {%endif%}
+        <br>
+        {%if post.user.get_full_name%}
+        <span>Author: {{post.user.get_full_name }}</span>
+        {%endif%}
+
+        <div class="row">
+            <div class="content-markdown post-detail-item">{{post.get_markdown}}</div>
+
+            {% if request.user.is_authenticated %}
+            <div class="col-12">
+                <a href="{{ post.get_update_url }}">Edit</a>
+                <a href="{{ post.get_delete_url }}">Delete</a>
+            </div>
+            {% endif %}
+        </>
+        <div>
+            <p class="lead">Comments</p>
+            <form method="POST"> {%csrf_token%}
+                {{comment_form|crispy}}
+                <input type="submit" value="post comment" class="btn btn-default">
+            </form>
+            <hr />
+            {% for comment in comments%}
+
+            <blockquote>
+                <p>{{comment.content}}</p>
+                <footer>{{comment.user}} | {{comment.timestamp|timesince}} ago {%if comment.children.count > 0%} | {{comment.children.count}}Comments {%endif%}| <a href="" class="comment-reply-btn">Reply</a></footer>
+                <div class="comment-reply" style="display: none;">
+                    {%for child_comment in comment.children%}
+                    <blockquote>
+                        <p>{{child_comment.content}}</p>
+                        <footer>{{child_comment.user}} | {{child_comment.timestamp|timesince}} ago</footer>
+                    </blockquote>
+                    {%endfor%}
+                    <form method="POST"> {%csrf_token%}
+                        {{comment_form|crispy}}
+                        <input type="hidden" name="parent_id" value="{{comment.id}}">
+                        <input type="submit" value="reply" class="btn btn-primary">
+                    </form>
+                </div>
+            </blockquote>
+            <hr />
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+{%endblock%}

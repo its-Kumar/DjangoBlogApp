@@ -1,0 +1,40 @@
+{%extends 'base.html'%}
+
+{%block title%} List {%endblock%}
+
+{%block content%}
+<div class="container">
+    <a class="btn btn-default" href="{%url 'blog:create'%}">+ New Blog</a>
+    {%for post in posts%}
+        <div class="row">
+            <div class="col-sm-12">
+                {% if post.image %}
+                <div class="thumbnail"><img src='{{ post.image.url }}' class='img-responsive' /></div>
+                {%endif%}
+            <a href="{{ post.get_absolute_url }}"><h2>{{post.title}}</h2></a>
+            <small class="text-muted">{{post.publish}}</small>
+            <p class="post-detail-item">{{post.get_markdown|truncatewords_html:15}}</p>
+        </div>
+    </div>
+    {%endfor%}
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if posts.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+            </span>
+
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+            <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+{%endblock%}

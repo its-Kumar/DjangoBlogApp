@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container">
+
+  <div class='row'>
+    <div class='col-12 col-8 mx-auto'>
+      {% if query %}
+      <p class='lead'> You searched for "{{ query }}" </p>
+
+      {% else %}
+      <form class="form-inline my-2 my-lg-0" action="/search/">
+        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      {% endif %}
+
+      <h2>Posts</h2>
+      {%for post in post_list%}
+      <div class="row">
+        <div class="col-sm-12">
+          {% if post.image %}
+          <div class="thumbnail"><img src='{{ post.image.url }}' class='img-responsive' /></div>
+          {%endif%}
+          <a href="{{ post.get_absolute_url }}">
+            <h2>{{post.title}}</h2>
+          </a>
+          <small class="text-muted">{{post.publish}}</small>
+          <p class="post-detail-item">{{post.get_markdown|truncatewords_html:15}}</p>
+        </div>
+      </div>
+      {%endfor%}
+
+      <h2>Comments</h2>
+      {%for comment in comment_list%}
+      <blockquote>
+        <p>{{comment.content}}</p>
+        <footer>{{comment.user}} | {{comment.timestamp|timesince}} ago {%if comment.children.count > 0%} |
+          {{comment.children.count}}Comments {%endif%}</footer>
+      </blockquote>
+      {%endfor%}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

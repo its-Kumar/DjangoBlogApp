@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{%load crispy_forms_tags%}
+{%block title%} {{post.title}} {%endblock%}
+
+
+{%block content%}
+<div class="container">
+
+    <div class='col-sm-6 col-sm-offset-3'>
+
+        <p>{{comment.content}}</p>
+        <footer>{{comment.user}} | {{comment.timestamp|timesince}} ago {%if comment.children.count > 0%} |
+            {{comment.children.count}}Comments {%endif%}
+        </footer>
+        <hr />
+        <div class="comment-reply" style="display: none;">
+            {%for child_comment in comment.children%}
+            <blockquote>
+                <p>{{child_comment.content}}</p>
+                <footer>{{child_comment.user}} | {{child_comment.timestamp|timesince}} ago</footer>
+            </blockquote>
+            {%endfor%}
+
+        </div>
+        <hr />
+        <form method="POST"> {%csrf_token%}
+            {{comment_form|crispy}}
+            <input type="hidden" name="parent_id" value="{{comment.id}}">
+            <input type="submit" value="reply" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+
+{%endblock%}
