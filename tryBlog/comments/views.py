@@ -1,11 +1,14 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CommentForm
 from .models import Comment
 
 # Create your views here.
+
 
 def comment_thread(request, id):
     comment = get_object_or_404(Comment, id=id)
@@ -43,5 +46,19 @@ def comment_thread(request, id):
     return render(request, 'comments/thread.html', context=context)
 
 
-def comment_delete(request):
-    pass
+@login_required
+def comment_delete(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    if comment.user != request.user:
+        response = HttpResponse("You do not have the permission to do this.")
+        response.status_code = 403
+        return response
+
+    if request.POST:
+        comment.delete()
+        messages.success(request, "The comment has been Deleted...")
+        return redirect('blog:list')
+    context = {
+        "comment": comment,
+    }
+    return render(request, 'comments/delete.html', context=context)

@@ -1,12 +1,25 @@
 # DjangoBlogApp
 
-Simple Blog application in `Django`
+A blog webapplication in `django` with the functionality of -
+- Draft post
+- Read Time
+- Slug
+- Coments and Replies
+- Image Upload
+- Markdown TextEditor Support
+- User Accounts
+- CRUD Operations
+- Search operation
 
+
+## Screenshot
+
+![img](Screenshot_2020-12-06_13-09-33.png)
 ## Getting Started
 
 ### Requirements
 
-Python 3.6 & up
+Python 3.7 & up\
 Virtual Environment (pipenv or virtualenv)
 
 
@@ -16,7 +29,7 @@ Virtual Environment (pipenv or virtualenv)
 $ cd /path/to/dev/folder
 $ mkdir try_django
 $ cd try_django
-$ pipenv --python 3.6 install django==2.2
+$ pipenv --python 3.7 install django==2.2.13
 
 OR
 
@@ -24,14 +37,13 @@ $ pipenv shell
 $ pipenv sync
 ```
 
-
-### 2. Create Django Project
+### 2. Run Server
 
 ```bash
-$ cd /path/to/dev/folder
-$ mkdir src
-$ cd src
-$ django-admin startproject try_django .
+
+$ cd ./tryBlog
+$ python manage.py runserver
 ```
 
-#### Kumar Shanu
+
+#### [Kumar Shanu](https://github.com/its-kumar/)

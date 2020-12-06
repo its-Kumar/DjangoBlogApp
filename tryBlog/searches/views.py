@@ -1,6 +1,7 @@
+from django.shortcuts import render
+
 from blog.models import Post
 from comments.models import Comment
-from django.shortcuts import render
 
 from .models import SearchQuery
 

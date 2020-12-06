@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='publish',
-            field=models.DateField(default=datetime.datetime(2020, 12, 1, 6, 30, 15, 61876, tzinfo=utc)),
+            field=models.DateField(default=datetime.datetime(
+                2020, 12, 1, 6, 30, 15, 61876, tzinfo=utc)),
             preserve_default=False,
         ),
     ]

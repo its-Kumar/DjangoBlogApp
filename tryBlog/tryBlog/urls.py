@@ -16,13 +16,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.http.response import HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.urls import include, path
+
 from searches.views import search_view
 
 
 def home(request):
-    return HttpResponse("<h1>Hello</h1>from: <p>Kumar Shanu</p>")
+    return HttpResponseRedirect("/posts/", "<h1>Hello</h1>from: <p>Kumar Shanu</p>")
 
 
 urlpatterns = [
@@ -32,8 +33,11 @@ urlpatterns = [
     path('posts/', include('blog.urls')),
     path('comments/', include('comments.urls')),
     path("search/", search_view),
+    path("accounts/", include('accounts.urls')),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

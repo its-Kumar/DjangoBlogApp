@@ -1,5 +1,3 @@
-from comments.forms import CommentForm
-from comments.models import Comment
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +7,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from blog.forms import PostModelForm
 from blog.models import Post
+from comments.forms import CommentForm
+from comments.models import Comment
+
+from .utils import get_read_time
 
 # Create your views here.
 
@@ -27,6 +29,7 @@ def post_list(request):
         "posts": posts
     }
     return render(request, 'blog/list.html', context=context)
+
 
 @login_required
 def post_create(request):
@@ -51,14 +54,14 @@ def post_detail(request, slug):
     if post.draft:
         if post.user != request.user:
             raise Http404
-
+    print(get_read_time(post.get_markdown()))
     initial_data = {
         "content_type": post.get_content_type,
         "object_id": post.id
     }
     parent_obj = None
     form = CommentForm(request.POST or None, initial=initial_data)
-    if form.is_valid():
+    if form.is_valid() and request.user.is_authenticated:
         c_type = form.cleaned_data.get("content_type")
         content_type = ContentType.objects.get(model=c_type)
         obj_id = form.cleaned_data.get("object_id")
@@ -88,10 +91,12 @@ def post_detail(request, slug):
     }
     return render(request, 'blog/detail.html', context=context)
 
+
 @login_required
 def post_update(request, slug):
     instance = get_object_or_404(Post, slug=slug)
-    form = PostModelForm(request.POST or None, request.FILES or None, instance=instance)
+    form = PostModelForm(request.POST or None,
+                         request.FILES or None, instance=instance)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
@@ -106,9 +111,9 @@ def post_update(request, slug):
     return render(request, 'blog/form.html', context=context)
 
 
+@login_required
 def post_delete(request, slug):
     post = get_object_or_404(Post, slug=slug)
     post.delete()
     messages.success(request, 'successfully deleted')
     return redirect('blog:list')
-    return render(request, 'blog/form.html', context=context)

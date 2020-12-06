@@ -1,0 +1,12 @@
+{%extends 'base.html' %}
+
+{%block content%}
+<div class="container">
+    <h1>Are you sure you want to delete {{comment.content|truncatechars:20}} ? </h1>
+    <form method="post">{%csrf_token%}
+        <input type="submit" value="delete" class="btn btn-warning">
+        <a href="{{comment.get_absolute_url }}" class="btn btn-default">No</a>
+    </form>
+</div>
+
+{%endblock%}

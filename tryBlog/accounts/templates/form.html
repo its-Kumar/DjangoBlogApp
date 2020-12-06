@@ -1,0 +1,7 @@
+<div class="container">
+    <h1>{{title}}</h1>
+    <form method="POST" class='col-sm-6 col-sm-offset-3'>{%csrf_token%}
+        {{form.as_p}}
+        <input type="submit" value="Login">
+    </form>
+</div>
